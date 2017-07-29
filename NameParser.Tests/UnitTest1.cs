@@ -17,6 +17,7 @@ namespace NameParser.Tests
             var result = nameParser.ParseName(name);
             // Assert
             Assert.Equal(result.FirstName, "Zendaya");
+            Assert.Equal(result.LastName, null);
         }
 
         [Fact]
@@ -59,6 +60,20 @@ namespace NameParser.Tests
             Assert.Equal(result.LastName, "Jones");
         }    
         
+
+        [Fact]
+        public void OneNameIsEnteredWithAMiddleInitialFollowedByAPeriod()
+        {
+            // Arrange
+            var name = "Steve L.";
+            var nameParser = new Parser();
+            // Act
+            var result = nameParser.ParseName(name);
+            // Assert
+            Assert.Equal(result.FirstName, "Steve");
+            Assert.Equal(result.LastName, "L.");
+        }    
+
         [Fact]
         public void TwoNamesAreEnteredWithASuffixFollowedByAPeriod()
         {
@@ -87,6 +102,26 @@ namespace NameParser.Tests
             Assert.Equal(result.Honorific, expectedHonorific);
             Assert.Equal(result.FirstName, expectedFirstName);
             Assert.Equal(result.LastName, expectedLastName);
+        }    
+
+        
+        
+        [Theory]
+        [InlineData("Mr. Bob L. Michaels Jr.", "Mr.", "Bob", "Michaels", "L", "Jr.")]
+        [InlineData("Mrs. Aunt S. Jemima PHD", "Mrs.", "Aunt", "Jemima","S", "PHD")]
+        public void TwoNamesAreEnteredPreceededWithAnHonorificIncludingAMiddleInitialAndASuffix(string nameToTest, string expectedHonorific, string expectedFirstName, string expectedLastName, string expectedMiddleInitial, string expectedSuffix)
+        {
+            // Arrange
+            // var name = "Mr. Bob Michaels";
+            var nameParser = new Parser();
+            // Act
+            var result = nameParser.ParseName(nameToTest);
+            // Assert
+            Assert.Equal(result.Honorific, expectedHonorific);
+            Assert.Equal(result.FirstName, expectedFirstName);
+            Assert.Equal(result.LastName, expectedLastName);
+            Assert.Equal(result.Suffix, expectedSuffix);
+            Assert.Equal(result.MiddleName, expectedMiddleInitial);
         }    
     }
 }
